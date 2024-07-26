@@ -1,0 +1,170 @@
+{{exhead}}
+<main>
+    <style>
+        html {
+            --main-title-font-color: black;
+            --main-wrapper-border-color: #989898;
+            --main-table-background: white;
+            --main-table-even-background: #ECECEC;
+            --main-normal-font-color: black;
+        }
+
+        html[theme=dark] {
+            --main-title-font-color: white;
+            --main-wrapper-border-color: var(--black-color-200);
+            --main-table-background: black;
+            --main-table-even-background: #1a1a1a;
+            --main-normal-font-color: white;
+        }
+
+        main {
+            padding-inline: 100px;
+            width: min(100vw, 1440px);
+            height: max(500px, 100%);
+            margin-left: 50%;
+            transform: translateX(-50%);
+        }
+
+        main h1 {
+            margin-top: 32px;
+            font-size: 42px;
+            font-weight: 600;
+            text-align: center;
+            color: var(--main-title-font-color);
+        }
+
+        main .hight-score {
+            font-size: 60px;
+            font-weight: 600;
+            background: var(--main-color);
+            background-clip: text;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            text-align: center;
+        }
+
+        main .wrapper {
+            margin-top: 32px;
+            border-radius: 16px;
+            border: 0.5px solid var(--main-wrapper-border-color);
+            overflow-y: hidden;
+            overflow-x: auto;
+        }
+
+        main table {
+            background: var(--main-table-background);
+            width: 100%;
+        }
+
+        main table,
+        main table * {
+            border-collapse: collapse;
+        }
+
+        main table tr th {
+            text-align: left;
+        }
+
+        main table tr:nth-child(even) {
+            background: var(--main-table-even-background);
+        }
+
+        main table tr th,
+        main table tr td {
+            padding: 8px 16px;
+            white-space: nowrap;
+            color: var(--main-normal-font-color);
+        }
+
+        main table tr td:not(:nth-child(2)),
+        main table tr th:not(:nth-child(2)) {
+            text-align: right;
+        }
+
+        main table tr td svg {
+            cursor: pointer;
+        }
+
+        @media (max-width: 1024px) {
+            main {
+                padding-inline: 80px;
+            }
+        }
+
+        @media (max-width: 768px) {
+            main {
+                padding-inline: 50px;
+            }
+        }
+
+        @media (max-width: 425px) {
+            main {
+                padding-inline: 20px;
+            }
+        }
+    </style>
+    <h1>คะแนนสูงสุด</h1>
+    <h3 class="hight-score" id="hight-score">...</h3>
+    <div class="wrapper">
+        <table>
+            <tr>
+                <th width="10%">ID</th>
+                <th width="60%">เวลา</th>
+                <th width="30%">คะแนนเฉลี่ย (%)</th>
+            </tr>
+        </table>
+    </div>
+    <script>
+        let url = new URL(window.location.href);
+        let searchParams = new URLSearchParams(url.search);
+        const pose_id = searchParams.get('pose');
+        var highest_score = 0;
+
+        if (pose_id == null) {
+            Route.goto("/exercises");
+        }
+
+        Security.OAuth.getRole().then(role => {
+            let query_string = ""
+
+            if (role != RoleList.unknown) {
+                let token = window.localStorage.getItem(SETTING.LocalStorage.Login.token);
+                let email = window.localStorage.getItem(SETTING.LocalStorage.Login.email);
+                let password = window.localStorage.getItem(SETTING.LocalStorage.Login.password);
+
+                if (token) {
+                    query_string = "?auth_token=" + token
+                }
+
+                if (email && password) {
+                    query_string = "?auth_email=" + email + "&auth_pass=" + password
+                }
+            }
+
+            fetch(`${SETTING.Server}/pose/${pose_id}/scores${query_string}`).then(res => {
+                if (res.ok) return res.json();
+            }).then(res_data => {
+                if (!res_data.success) throw Error(res_data.text);
+
+                data = res_data.data;
+
+                data.forEach(iter_data => {
+                    let new_elem = document.createElement("tr")
+                    new_elem.innerHTML = `<td>${iter_data.id}</td><td>${iter_data.timestamp}</td><td>${iter_data.accuracy}</td>`;
+                    document.querySelector("table").appendChild(new_elem);
+
+                    if (iter_data.accuracy > highest_score) {
+                        highest_score = iter_data.accuracy;
+                    }
+                });
+
+                document.querySelector("#hight-score").textContent = `${highest_score}%`;
+            }).catch(err => {
+                alert(err);
+                window.location = "/";
+            })
+        })
+    </script>
+</main>
+{{structure_script}}
+{{script}}

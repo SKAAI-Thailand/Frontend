@@ -1,0 +1,26 @@
+<script>
+    const searchParams = new URLSearchParams(window.location.search);
+
+    if (!searchParams.has('code')) {
+        window.location.pathname = '/login';
+    }
+
+    async function on_start() {
+        const user_token = searchParams.get('code');
+
+        Security.OAuth.setCode(user_token)
+
+        let user_data = await Security.OAuth.getInfo();
+
+        Security.OAuth.clearCode();
+
+        if (user_data.success === false || Object.values(RoleList)[user_data.role] == RoleList.unknown) {
+            window.location = '/login';
+        } else if (Object.values(RoleList)[user_data.role] === RoleList.general) {
+            Security.OAuth.setToken(user_data.token);
+            window.location = '/exercises';
+        }
+    }
+
+    on_start()
+</script>

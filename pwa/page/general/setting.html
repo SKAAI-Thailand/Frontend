@@ -1,0 +1,66 @@
+<main>
+    <style>
+        main {
+            padding: 100px 100px 0 100px;
+            width: min(100vw, 1440px);
+            height: max(500px, 100%);
+            z-index: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        main section.head {
+            display: inline-flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        main section.logout {
+            display: inline-flex;
+            flex-direction: column;
+            align-items: center;
+            margin-top: 50px;
+        }
+
+        main section.logout button {
+            border-radius: 20px;
+            background: #FE6244;
+            padding: 8px 16px;
+            color: white;
+            font-size: 32px;
+            font-weight: 600;
+            cursor: pointer;
+        }
+
+        main section.logout button:hover {
+            background: #ff5735;
+        }
+
+        @media (max-width: 1024px) {
+            main {
+                padding-inline: 80px;
+            }
+        }
+
+        @media (max-width: 768px) {
+            main {
+                padding-inline: 50px;
+            }
+        }
+
+        @media (max-width: 425px) {
+            main {
+                padding-inline: 20px;
+            }
+        }
+    </style>
+    <section class="head">
+        <h1>การตั้งค่า</h1>
+    </section>
+    <section class="logout">
+        <button type="button" onclick="Route.goto('/logout');">ออกจากระบบ</button>
+    </section>
+</main>
+{{structure_script}}
+{{script}}

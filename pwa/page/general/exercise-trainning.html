@@ -1,0 +1,531 @@
+{{exhead}}
+<main>
+    <style>
+        html {
+            --main-record-background: white;
+        }
+
+        html[theme=dark] {
+            --main-record-background: var(--black-color-900);
+        }
+
+        main {
+            padding-inline: 100px;
+            width: min(100vw, 1440px);
+            height: max(500px, 100%);
+            margin-left: 50%;
+            transform: translateX(-50%);
+        }
+
+        main section.head {
+            width: 100%;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            column-gap: 24px;
+        }
+
+        main section.head .record {
+            display: inline-flex;
+            align-items: center;
+            column-gap: 16px;
+            padding: 8px 24px;
+            border-radius: 8px;
+            border: 1px solid #7D84FF;
+            background: var(--main-record-background);
+            cursor: pointer;
+        }
+
+        main section.head .record:hover {
+            opacity: .8;
+        }
+
+        main section.head .record p {
+            font-size: 20px;
+            font-weight: 400;
+            background: var(--main-color);
+            background-clip: text;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        main section.video {
+            aspect-ratio: 3 / 2;
+            width: 100%;
+            margin-block: 48px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        main section.video h1 {
+            font-size: 48px;
+            color: #555;
+            font-weight: 400;
+            text-align: center;
+        }
+
+        main section.video h1.remove {
+            display: none;
+        }
+
+        main section.video .video-mp {
+            display: none;
+            width: 100%;
+            height: 100%;
+        }
+
+        main section.video h1.remove+.video-mp {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            width: 100%;
+        }
+
+        main section.video .video-mp video {
+            width: min(1024px, 100%);
+            aspect-ratio: 8 / 5;
+        }
+
+        main section.video h1.remove+.video-mp canvas {
+            aspect-ratio: 8 / 5;
+            width: min(100%, 1024px);
+        }
+
+        @media (max-width: 1024px) {
+            main {
+                padding-inline: 80px;
+            }
+        }
+
+        @media (max-width: 768px) {
+            main {
+                padding-inline: 50px;
+            }
+        }
+
+        @media (max-width: 425px) {
+            main {
+                padding-inline: 20px;
+            }
+        }
+    </style>
+    <section class="head">
+        <button type="button" class="record">
+            <svg xmlns="http://www.w3.org/2000/svg" width="30" height="24" viewBox="0 0 30 24" fill="none">
+                <path d="M13.6667 6.66669H16.3334" stroke="url(#paint0_linear_270_480)" stroke-width="1.5"
+                    stroke-linecap="round" />
+                <path
+                    d="M1.66675 10.6667C1.66675 6.2669 1.66675 4.06701 3.03359 2.70018C4.40041 1.33334 6.60031 1.33334 11.0001 1.33334H12.3334C16.7331 1.33334 18.933 1.33334 20.2999 2.70018C21.6667 4.06701 21.6667 6.2669 21.6667 10.6667V13.3333C21.6667 17.7331 21.6667 19.9329 20.2999 21.2999C18.933 22.6667 16.7331 22.6667 12.3334 22.6667H11.0001C6.60031 22.6667 4.40041 22.6667 3.03359 21.2999C1.66675 19.9329 1.66675 17.7331 1.66675 13.3333V10.6667Z"
+                    stroke="url(#paint0_linear_270_480)" stroke-width="1.5" />
+                <path
+                    d="M21.6667 7.87449L21.8346 7.73597C24.6557 5.40833 26.0662 4.2445 27.1998 4.80645C28.3334 5.3684 28.3334 7.23142 28.3334 10.9575V13.0426C28.3334 16.7687 28.3334 18.6316 27.1998 19.1936C26.0662 19.7555 24.6557 18.5918 21.8346 16.264L21.6667 16.1255"
+                    stroke="url(#paint0_linear_270_480)" stroke-width="1.5" stroke-linecap="round" />
+                <defs>
+                    <linearGradient id="paint0_linear_270_480" x1="12" y1="12" x2="13" y2="12"
+                        gradientUnits="userSpaceOnUse">
+                        <stop stop-color="#7D84FF" />
+                        <stop offset="1" stop-color="#D04AFF" />
+                    </linearGradient>
+                    <linearGradient id="paint1_linear_270_480" x1="1.33325" y1="12.5" x2="22.6666" y2="12.5"
+                        gradientUnits="userSpaceOnUse">
+                        <stop stop-color="#7D84FF" />
+                        <stop offset="1" stop-color="#D04AFF" />
+                    </linearGradient>
+                </defs>
+            </svg>
+            <p>Start Record</p>
+        </button>
+    </section>
+    <section class="video">
+        <h1>No Input here</h1>
+        <div class="video-mp">
+            <video id="input_video" style="display: none;"></video>
+            <canvas id="output_canvas"></canvas>
+        </div>
+    </section>
+    <script>
+        (async function () {
+            try {
+                const result = await navigator.permissions.query({ name: 'camera' });
+
+                if (result.state !== 'granted') {
+                    try {
+                        await navigator.mediaDevices.getUserMedia({ video: true });
+                    } catch (error) {
+                        console.error('Error requesting camera permission:', error);
+                    }
+                }
+            } catch (error) {
+                try {
+                    await navigator.mediaDevices.getUserMedia({ video: true });
+                } catch (error) {
+                    console.error('Error requesting camera permission:', error);
+                }
+            }
+        })();
+
+        let url = new URL(window.location.href);
+        let searchParams = new URLSearchParams(url.search);
+        const pose_id = searchParams.get('pose');
+
+        if (pose_id == null) {
+            Route.goto("/exercises");
+        }
+
+        var allow_record = false;
+        var max_round = 100;
+        var frame_delay = 20;
+
+        const none_pose = [{ 'x': 0, 'y': 0, 'z': 0, 'visibility': 0 }, { 'x': 0, 'y': 0, 'z': 0, 'visibility': 0 }, { 'x': 0, 'y': 0, 'z': 0, 'visibility': 0 }, { 'x': 0, 'y': 0, 'z': 0, 'visibility': 0 }, { 'x': 0, 'y': 0, 'z': 0, 'visibility': 0 }, { 'x': 0, 'y': 0, 'z': 0, 'visibility': 0 }, { 'x': 0, 'y': 0, 'z': 0, 'visibility': 0 }, { 'x': 0, 'y': 0, 'z': 0, 'visibility': 0 }, { 'x': 0, 'y': 0, 'z': 0, 'visibility': 0 }, { 'x': 0, 'y': 0, 'z': 0, 'visibility': 0 }, { 'x': 0, 'y': 0, 'z': 0, 'visibility': 0 }, { 'x': 0, 'y': 0, 'z': 0, 'visibility': 0 }, { 'x': 0, 'y': 0, 'z': 0, 'visibility': 0 }, { 'x': 0, 'y': 0, 'z': 0, 'visibility': 0 }, { 'x': 0, 'y': 0, 'z': 0, 'visibility': 0 }, { 'x': 0, 'y': 0, 'z': 0, 'visibility': 0 }, { 'x': 0, 'y': 0, 'z': 0, 'visibility': 0 }, { 'x': 0, 'y': 0, 'z': 0, 'visibility': 0 }, { 'x': 0, 'y': 0, 'z': 0, 'visibility': 0 }, { 'x': 0, 'y': 0, 'z': 0, 'visibility': 0 }, { 'x': 0, 'y': 0, 'z': 0, 'visibility': 0 }, { 'x': 0, 'y': 0, 'z': 0, 'visibility': 0 }, { 'x': 0, 'y': 0, 'z': 0, 'visibility': 0 }, { 'x': 0, 'y': 0, 'z': 0, 'visibility': 0 }, { 'x': 0, 'y': 0, 'z': 0, 'visibility': 0 }, { 'x': 0, 'y': 0, 'z': 0, 'visibility': 0 }, { 'x': 0, 'y': 0, 'z': 0, 'visibility': 0 }, { 'x': 0, 'y': 0, 'z': 0, 'visibility': 0 }, { 'x': 0, 'y': 0, 'z': 0, 'visibility': 0 }, { 'x': 0, 'y': 0, 'z': 0, 'visibility': 0 }, { 'x': 0, 'y': 0, 'z': 0, 'visibility': 0 }, { 'x': 0, 'y': 0, 'z': 0, 'visibility': 0 }, { 'x': 0, 'y': 0, 'z': 0, 'visibility': 0 }];
+        const none_hand = [[{ 'x': 0, 'y': 0, 'z': 0 }, { 'x': 0, 'y': 0, 'z': 0 }, { 'x': 0, 'y': 0, 'z': 0 }, { 'x': 0, 'y': 0, 'z': 0 }, { 'x': 0, 'y': 0, 'z': 0 }, { 'x': 0, 'y': 0, 'z': 0 }, { 'x': 0, 'y': 0, 'z': 0 }, { 'x': 0, 'y': 0, 'z': 0 }, { 'x': 0, 'y': 0, 'z': 0 }, { 'x': 0, 'y': 0, 'z': 0 }, { 'x': 0, 'y': 0, 'z': 0 }, { 'x': 0, 'y': 0, 'z': 0 }, { 'x': 0, 'y': 0, 'z': 0 }, { 'x': 0, 'y': 0, 'z': 0 }, { 'x': 0, 'y': 0, 'z': 0 }, { 'x': 0, 'y': 0, 'z': 0 }, { 'x': 0, 'y': 0, 'z': 0 }, { 'x': 0, 'y': 0, 'z': 0 }, { 'x': 0, 'y': 0, 'z': 0 }, { 'x': 0, 'y': 0, 'z': 0 }, { 'x': 0, 'y': 0, 'z': 0 }], [{ 'x': 0, 'y': 0, 'z': 0 }, { 'x': 0, 'y': 0, 'z': 0 }, { 'x': 0, 'y': 0, 'z': 0 }, { 'x': 0, 'y': 0, 'z': 0 }, { 'x': 0, 'y': 0, 'z': 0 }, { 'x': 0, 'y': 0, 'z': 0 }, { 'x': 0, 'y': 0, 'z': 0 }, { 'x': 0, 'y': 0, 'z': 0 }, { 'x': 0, 'y': 0, 'z': 0 }, { 'x': 0, 'y': 0, 'z': 0 }, { 'x': 0, 'y': 0, 'z': 0 }, { 'x': 0, 'y': 0, 'z': 0 }, { 'x': 0, 'y': 0, 'z': 0 }, { 'x': 0, 'y': 0, 'z': 0 }, { 'x': 0, 'y': 0, 'z': 0 }, { 'x': 0, 'y': 0, 'z': 0 }, { 'x': 0, 'y': 0, 'z': 0 }, { 'x': 0, 'y': 0, 'z': 0 }, { 'x': 0, 'y': 0, 'z': 0 }, { 'x': 0, 'y': 0, 'z': 0 }, { 'x': 0, 'y': 0, 'z': 0 }]];
+
+        function GetResult(pose_node) {
+            let auth_req = null;
+
+            if (role != RoleList.unknown) {
+                let token = window.localStorage.getItem(SETTING.LocalStorage.Login.token);
+                let email = window.localStorage.getItem(SETTING.LocalStorage.Login.email);
+                let password = window.localStorage.getItem(SETTING.LocalStorage.Login.password);
+
+                if (token) {
+                    auth_req = { token: token };
+                }
+
+                if (email && password) {
+                    auth_req = { email: email, password: password };
+                }
+            }
+
+            fetch(SETTING.Server + "/pose/" + pose_id + "/check", {
+                method: "post",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({
+                    "version": "0.1",
+                    "data": {
+                        "auth": auth_req,
+                        "pose": pose_node
+                    }
+                }),
+            }).then(res => {
+                if (!res.ok) throw Error("Response Not OK");
+
+                return res.json();
+            }).then(res_data => {
+                data = res_data.data;
+
+                if (!auth_req) {
+                    document.querySelector("#view-last-result").addEventListener('click', e => {
+                        Route.goto('/exercises');
+                    });
+                    document.querySelector("#view-last-result").textContent = 'กลับหน้าแรก';
+                } else {
+                    document.querySelector("#view-last-result").addEventListener('click', e => {
+                        Route.goto('/exercise-scored', { pose: pose_id });
+                    });
+                }
+
+                document.querySelector("#result-modal-bef").textContent = (data.accuracy >= 60) ? "ยินดีด้วย" : "อย่ายอมแพ้";
+                document.querySelector("#result-modal-acc").textContent = `${data.accuracy}%`;
+                document.querySelector("#result-modal-lev").textContent = (data.accuracy >= 90) ? "ไร้ซึ่งที่ติ" : (data.accuracy >= 80) ? "เก่งมาก" : "พยายามต่อไป";
+                document.querySelector("#result-modal").classList.add("active");
+            }).catch(err => {
+                console.error(err);
+            });
+        }
+
+        const pose = new Pose({
+            locateFile: (file) => `https://cdn.jsdelivr.net/npm/@mediapipe/pose/${file}`,
+        });
+
+        const hands = new Hands({
+            locateFile: (file) => `https://cdn.jsdelivr.net/npm/@mediapipe/hands/${file}`,
+        });
+
+        pose.setOptions({
+            modelComplexity: 1,
+            smoothLandmarks: true,
+            enableSegmentation: true,
+            smoothSegmentation: true,
+            minDetectionConfidence: 0.5,
+            minTrackingConfidence: 0.5,
+        });
+
+        hands.setOptions({
+            maxNumHands: 2,
+            modelComplexity: 1,
+            minDetectionConfidence: 0.5,
+            minTrackingConfidence: 0.5,
+        });
+
+        document.querySelector("main section.head .record").addEventListener(
+            "click",
+            async () => {
+                if (!allow_record) {
+                    return;
+                }
+
+                allow_record = false;
+
+                document.querySelector("main section.video h1").classList = "remove";
+
+                const videoElement = document.getElementById('input_video');
+                const canvasElement = document.getElementById('output_canvas');
+                const canvasCtx = canvasElement.getContext('2d');
+
+                var start_collect = false;
+
+                function openFullscreen() {
+                    if (canvasElement.requestFullscreen) {
+                        canvasElement.requestFullscreen();
+                    } else if (canvasElement.mozRequestFullScreen) {
+                        canvasElement.mozRequestFullScreen();
+                    } else if (canvasElement.webkitRequestFullscreen) {
+                        canvasElement.webkitRequestFullscreen();
+                    } else if (canvasElement.msRequestFullscreen) {
+                        canvasElement.msRequestFullscreen();
+                    }
+                }
+
+                function exitFullscreen() {
+                    if (document.exitFullscreen) {
+                        document.exitFullscreen();
+                    } else if (document.mozCancelFullScreen) {
+                        document.mozCancelFullScreen();
+                    } else if (document.webkitExitFullscreen) {
+                        document.webkitExitFullscreen();
+                    } else if (document.msExitFullscreen) {
+                        document.msExitFullscreen();
+                    }
+                }
+
+                let countdown = 3000;
+
+                openFullscreen();
+                startCamera();
+
+                function startCamera() {
+                    let collect_data = [];
+                    let current_round = 0;
+
+                    pose.onResults(onPoseResult);
+                    hands.onResults(onHandResult);
+
+                    const camera = new Camera(videoElement, {
+                        onFrame: async () => {
+                            if (current_round >= max_round) {
+                                stopCamera();
+                                GetResult(collect_data);
+                                return;
+                            }
+
+                            await pose.send({ image: videoElement });
+                            await hands.send({ image: videoElement });
+
+                            if (!start_collect) {
+                                CountDown(Math.floor((countdown - 1) / 1000));
+                                countdown -= 100
+                                await new Promise(resolve => setTimeout(resolve, 10));
+                                return;
+                            }
+
+                            await new Promise(resolve => setTimeout(resolve, frame_delay));
+
+                            current_round++;
+                        },
+                        width: 1024,
+                        height: 800,
+                    });
+
+                    camera.start();
+
+                    function stopCamera() {
+                        pose.close();
+                        hands.close();
+                        camera.stop();
+                        exitFullscreen();
+                    }
+
+                    function onPoseResult(results) {
+                        if (start_collect) {
+                            collect_data.push({
+                                poseLandmarks: results.poseLandmarks ? results.poseLandmarks : none_pose,
+                                handLandmarks: collect_data.length > 0 ? collect_data[collect_data.length - 1].handLandmarks : none_hand
+                            });
+                        }
+
+                        canvasElement.width = videoElement.videoWidth;
+                        canvasElement.height = videoElement.videoHeight;
+
+                        canvasCtx.clearRect(0, 0, canvasElement.width, canvasElement.height);
+                        canvasCtx.drawImage(results.image, 0, 0, canvasElement.width, canvasElement.height);
+
+                        if (results.poseLandmarks) {
+                            drawConnectors(canvasCtx, results.poseLandmarks, POSE_CONNECTIONS, { color: '#00FF00', lineWidth: 4 });
+                            drawLandmarks(canvasCtx, results.poseLandmarks, { color: '#FF0000', lineWidth: 2 });
+                        }
+                    }
+
+                    function onHandResult(results) {
+                        if (start_collect) {
+                            collect_data[collect_data.length - 1].handLandmarks = none_hand;
+
+                            if (results.multiHandLandmarks && results.multiHandLandmarks.length === 2) {
+                                collect_data[collect_data.length - 1].handLandmarks = results.multiHandLandmarks;
+                            }
+                        }
+
+                        for (const landmarks of results.multiHandLandmarks) {
+                            drawConnectors(canvasCtx, landmarks, HAND_CONNECTIONS, { color: '#00FF00', lineWidth: 5 });
+                            drawLandmarks(canvasCtx, landmarks, { color: '#FF0000', lineWidth: 2 });
+                        }
+                    }
+
+                    function CountDown(time) {
+                        if (time < 0) {
+                            start_collect = true;
+                        } else {
+                            canvasCtx.drawImage(videoElement, 0, 0, canvasElement.width, canvasElement.height);
+                            canvasCtx.font = '48px Arial';
+                            canvasCtx.fillStyle = '#FFFFFF';
+                            canvasCtx.textAlign = 'center';
+                            canvasCtx.fillText(Math.floor(time), canvasElement.width / 2, canvasElement.height / 2);
+                        }
+                    }
+                }
+            },
+            false,
+        );
+
+
+        fetch(SETTING.Server + "/pose/" + pose_id + "/info").then(res => {
+            return res.json();
+        }).then(info => {
+            pose_info = info.data;
+
+            max_round = pose_info.capture_count;
+            frame_delay = pose_info.capture_delay;
+
+            allow_record = true;
+        });
+    </script>
+</main>
+<div class="modal" id="result-modal">
+    <style>
+        .modal {
+            position: fixed;
+            z-index: 100;
+            width: 100vw;
+            height: 100dvh;
+            background: rgba(0, 0, 0, .2);
+            display: none;
+            top: 0;
+            left: 0;
+            align-items: center;
+            justify-content: center;
+            padding-inline: 100px;
+        }
+
+        .modal.active {
+            display: flex;
+        }
+
+        .modal .wrapper {
+            padding: 32px;
+            width: min(100%, 400px);
+            background: white;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            border-radius: 16px;
+            position: relative;
+            z-index: 101;
+        }
+
+        .modal .wrapper h3 {
+            text-align: center;
+            font-size: 28px;
+            font-weight: 500;
+            color: #555;
+        }
+
+        .modal .wrapper p {
+            color: #555;
+            font-size: 16px;
+            font-weight: 400;
+        }
+
+        .modal .wrapper h1 {
+            font-size: 78px;
+            font-weight: 500;
+            background: var(--main-color);
+            background-clip: text;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .modal .wrapper h5 {
+            font-size: 24px;
+            font-weight: 400;
+            background: var(--main-color);
+            background-clip: text;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .modal .wrapper .prog {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 100%;
+            column-gap: 16px;
+            margin-top: 16px;
+        }
+
+        .modal .wrapper .prog button.view {
+            border-radius: 12px;
+            border: 0.5px solid #989898;
+            padding: 8px 24px;
+            font-size: 16px;
+            font-weight: 400;
+            color: #555;
+            background: white;
+            cursor: pointer;
+            opacity: 1;
+        }
+
+        .modal .wrapper .prog button.view:hover {
+            opacity: .8;
+        }
+
+        @media (max-width: 1024px) {
+            .modal {
+                padding-inline: 80px;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .modal {
+                padding-inline: 50px;
+            }
+        }
+
+        @media (max-width: 425px) {
+            .modal {
+                padding-inline: 20px;
+            }
+        }
+    </style>
+    <div class="wrapper">
+        <h3 id="result-modal-bef">BEF</h3>
+        <p>คุณได้ความแม่นยำ</p>
+        <h1 id="result-modal-acc">XXX%</h1>
+        <h5 id="result-modal-lev">LEVEL</h5>
+        <div class="prog">
+            <button type="button" id="view-last-result" class="view">ผลลัพธ์ทั้งหมด</button>
+        </div>
+    </div>
+</div>
+{{structure_script}}

@@ -1,0 +1,234 @@
+<main>
+    <style>
+        html {
+            --main-font-color: black;
+            --main-input-border-color: #989898;
+            --main-input-font-color: var(--black-color-500);
+            --main-card-border-color: #989898;
+            --main-card-border-hover-color: black;
+        }
+
+        html[theme=dark] {
+            --main-font-color: white;
+            --main-input-border-color: var(--black-color-50);
+            --main-input-font-color: var(--black-color-50);
+            --main-card-border-color: var(--black-color-50);
+            --main-card-border-hover-color: var(--black-color-300);
+        }
+
+        main {
+            padding: 100px;
+            width: min(100vw, 1440px);
+            min-height: 100dvh;
+            z-index: 1;
+        }
+
+        main section.head {
+            display: inline-flex;
+            flex-direction: column;
+            row-gap: 16px;
+            align-items: center;
+            width: 100%;
+        }
+
+        main section.head h1 {
+            font-size: 28px;
+            font-weight: 600;
+            text-align: center;
+            color: var(--main-font-color);
+        }
+
+        main section.head input {
+            width: min(100%, 600px);
+            border-radius: 8px;
+            border: 0.5px solid var(--main-input-border-color);
+            padding: 8px 16px;
+            font-size: 16px;
+            font-weight: 500;
+            outline: none;
+            color: var(--main-input-font-color);
+            background: transparent;
+        }
+
+        main section.data {
+            margin-top: 62px;
+            display: inline-flex;
+            flex-direction: column;
+            row-gap: 48px;
+            width: 100%;
+        }
+
+        main section.data .category {
+            display: inline-flex;
+            flex-direction: column;
+            row-gap: 24px;
+            width: 100%;
+        }
+
+        main section.data .category .top {
+            display: inline-flex;
+            flex-direction: row;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        main section.data .category .top .title {
+            font-size: 18px;
+            font-weight: 500;
+            color: var(--main-font-color);
+        }
+
+        main section.data .category .top svg {
+            cursor: pointer;
+        }
+
+        main section.data .category .list {
+            display: flex;
+            flex-direction: row;
+            gap: 20px 32px;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+
+        main section.data .category .list div {
+            display: flex;
+            flex-direction: column;
+            border-radius: 16px;
+            overflow: hidden;
+            border: 0.5px solid var(--main-card-border-color);
+            min-width: 300px;
+            max-width: 400px;
+            flex: 1;
+            cursor: pointer;
+        }
+
+        main section.data .category .list div.hide {
+            display: none;
+        }
+
+        main section.data .category .list div:hover {
+            border-color: var(--main-card-border-hover-color);
+        }
+
+        main section.data .category .list div img {
+            aspect-ratio: 16 / 9;
+            width: 100%;
+            position: static;
+        }
+
+        main section.data .category .list div h3 {
+            font-size: 16px;
+            font-weight: 400;
+            padding: 16px;
+            color: var(--main-font-color);
+        }
+
+        @media (max-width: 1024px) {
+            main {
+                padding-inline: 80px;
+            }
+        }
+
+        @media (max-width: 768px) {
+            main {
+                padding-inline: 50px;
+            }
+        }
+
+        @media (max-width: 425px) {
+            main {
+                padding-inline: 20px;
+            }
+
+            main section.data .category .list {
+                flex-direction: column;
+            }
+
+            main section.data .category .list div {
+                min-width: unset;
+            }
+        }
+    </style>
+    <section class="head">
+        <h1>อยากฝึกท่าไหน ลองหาท่านั้นในช่องค้นหาดูสิ !</h1>
+        <input type="text" id="pose_name_input" placeholder="ค้นหาท่าที่คุณต้องการฝึกได้ที่นี่เลย!">
+    </section>
+    <section class="data">
+    </section>
+    <script>
+        var pose_list_for_search = {}
+        const pose_name_input = document.querySelector("input#pose_name_input");
+    
+        Security.OAuth.getRole().then(role => {
+            let query_string = ""
+    
+            if (role != RoleList.unknown) {
+                let token = window.localStorage.getItem(SETTING.LocalStorage.Login.token);
+                let email = window.localStorage.getItem(SETTING.LocalStorage.Login.email);
+                let password = window.localStorage.getItem(SETTING.LocalStorage.Login.password);
+    
+                if (token) {
+                    query_string = "?auth_token=" + token
+                }
+    
+                if (email && password) {
+                    query_string = "?auth_email=" + email + "&auth_pass=" + password
+                }
+            }
+    
+            fetch(SETTING.Server + "/pose" + query_string)
+                .then(res => {
+                    return res.json()
+                }).then(info => {
+                    for (const [pose_type_name, pose_list] of Object.entries(info.data)) {
+                        const category_group = document.createElement("div");
+                        category_group.classList = "category";
+    
+                        category_group.innerHTML = `<div class="top"><h2 class="title">${pose_type_name}</h2><div></div></div><div class="list"></div>`;
+    
+                        document.querySelector("main section.data").appendChild(category_group);
+    
+                        pose_list.forEach(pose_info => {
+                            let pose_element = document.createElement("div");
+                            pose_element.addEventListener("click", e => {
+                                e.preventDefault();
+                                Route.goto('/exercise-tutorial', { pose: pose_info[0] })
+                            });
+    
+                            if (pose_info[2]) {
+                                pose_element.classList.add("active");
+                            }
+    
+                            pose_element.setAttribute("pose_id", pose_info[0]);
+    
+                            pose_element.innerHTML = `<img src='https://skaai.mocuse.com/asset/database/pose_banner/${pose_info[0]}.webp' alt='Banner Image'><h3>${pose_info[1]}</h3>`
+                            category_group.querySelector(".list").appendChild(pose_element);
+    
+                            pose_list_for_search[pose_info[0]] = pose_info[1]
+                        });
+                    }
+                })
+        });
+    
+        pose_name_input.addEventListener("change", (e) => {
+            e.preventDefault();
+    
+            for (const [key, value] of Object.entries(pose_list_for_search)) {
+                if (value.includes(pose_name_input.value)) {
+                    document.querySelector("[pose_id=\"" + key + "\"]").classList.remove("hide");
+                } else {
+                    document.querySelector("[pose_id=\"" + key + "\"]").classList.add("hide");
+                }
+            }
+    
+            document.querySelectorAll("main section.data .category").forEach(ele => {
+                if (!ele.querySelector(".list > div:not(.hide)")) {
+                    ele.style.display = "none";
+                } else {
+                    ele.style.display = "flex";
+                }
+            })
+        });
+    </script>
+</main>
+{{structure_script}}

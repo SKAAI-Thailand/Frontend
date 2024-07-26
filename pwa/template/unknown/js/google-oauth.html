@@ -1,0 +1,31 @@
+<script>
+    const searchParams = new URLSearchParams(window.location.search);
+
+    if (!searchParams.has('code')) {
+        alert("ระบบไม่พบ Token ในการยืนยันตัวตน");
+        window.localStorage.setItem('google-oauth-status', '-');
+        window.close();
+    }
+
+    async function on_start() {
+        const user_token = searchParams.get('code');
+
+        Security.OAuth.setCode(user_token)
+
+        let user_data = await Security.OAuth.getInfo();
+
+        Security.OAuth.clearCode();
+
+        if (user_data.success === false || Object.values(RoleList)[user_data.role] == RoleList.unknown) {
+            alert('Token ในการยืนยันตัวตนไม่ถูกต้อง');
+            window.localStorage.setItem('google-oauth-status', '-');
+        } else if (Object.values(RoleList)[user_data.role] === RoleList.general) {
+            Security.OAuth.setToken(user_data.token);
+            window.localStorage.setItem('google-oauth-status', '+');
+        }
+
+        window.close();
+    }
+
+    on_start()
+</script>

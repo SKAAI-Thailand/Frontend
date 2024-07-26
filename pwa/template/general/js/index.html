@@ -1,0 +1,15 @@
+<script>
+    Security.OAuth.getRole().then(role => {
+        switch (role) {
+            case RoleList.general:
+                Route.goto("/exercises");
+                break;
+
+            default:
+                Route.goto("/login");
+                break;
+        }
+    }).catch(err => {
+        console.error(err);
+    });
+</script>

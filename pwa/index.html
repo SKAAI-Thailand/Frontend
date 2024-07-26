@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en" theme="light">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>SKAAI 1.0</title>
+  <link rel="shortcut icon" href="https://skaai.mocuse.com/asset/logo.png" type="image/png">
+  <meta name="theme-color" content="#1D2AFF" />
+  <link rel="preload" href="https://fonts.googleapis.com/css2?family=Noto+Sans+Thai:wght@100..900&display=swap"
+    onload="this.onload=null;this.rel='stylesheet'" as="style" />
+  <link rel="stylesheet" href="https://skaai.mocuse.com/asset/var.css">
+  <script src="https://skaai.mocuse.com/library/index_pwa.js" defer></script>
+  <script src="https://cdn.jsdelivr.net/npm/@mediapipe/pose@0.5.1675469404/pose.js" defer></script>
+  <script src="https://cdn.jsdelivr.net/npm/@mediapipe/hands@0.4.1675469240/hands.js" defer></script>
+  <script src="https://cdn.jsdelivr.net/npm/@mediapipe/drawing_utils@0.3.1675466124/drawing_utils.js" defer></script>
+  <script src="https://cdn.jsdelivr.net/npm/@mediapipe/camera_utils@0.3.1675466862/camera_utils.js" defer></script>
+  <style>
+    html {
+      --body-background: #FAFAFA;
+    }
+
+    html[theme=dark] {
+      --body-background: #050505;
+    }
+
+    * {
+      padding: 0;
+      margin: 0;
+      box-sizing: border-box;
+      font-family: "Noto Sans Thai", sans-serif;
+      transition: .2s;
+    }
+
+    html,
+    body {
+      width: 100vw;
+      overflow-x: hidden;
+      background: var(--body-background);
+    }
+
+    body.changing {
+      opacity: 0.8;
+    }
+
+    ::-webkit-scrollbar {
+      width: 5px;
+    }
+
+    ::-webkit-scrollbar-track {
+      background: #f1f1f1;
+    }
+
+    ::-webkit-scrollbar-thumb {
+      background: #888;
+    }
+
+    ::-webkit-scrollbar-thumb:hover {
+      background: #555;
+    }
+  </style>
+</head>
+
+<body>
+  <div class="load-section">
+    <style>
+      .load-section {
+        z-index: 9999;
+        width: 100vw;
+        height: 100dvh;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        opacity: 1;
+        top: 0;
+        left: 0;
+        position: fixed;
+        background: var(--body-background);
+      }
+
+      .load-img {
+        display: block;
+        aspect-ratio: 1 / 1;
+        width: 50vmin;
+        z-index: 9999;
+        opacity: 1;
+      }
+
+      .load-section.out,
+      .load-section.out .load-img {
+        opacity: 0;
+      }
+    </style>
+    <img class="load-img" src="/asset/logo.webp" alt="Logo">
+  </div>
+</body>
+
+</html>

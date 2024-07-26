@@ -1,0 +1,53 @@
+{
+  "name": "SKAAI 1.0",
+  "short_name": "SKAAI",
+  "theme_color": "#7d84ff",
+  "background_color": "#fafafa",
+  "display": "standalone",
+  "orientation": "portrait",
+  "scope": "/pwa",
+  "start_url": "/pwa",
+  "icons": [
+    {
+      "src": "/asset/manifest-icon/72.png",
+      "sizes": "72x72",
+      "type": "image/png"
+    },
+    {
+      "src": "/asset/manifest-icon/96.png",
+      "sizes": "96x96",
+      "type": "image/png"
+    },
+    {
+      "src": "/asset/manifest-icon/128.png",
+      "sizes": "128x128",
+      "type": "image/png",
+      "purpose": "maskable"
+    },
+    {
+      "src": "/asset/manifest-icon/144.png",
+      "sizes": "144x144",
+      "type": "image/png"
+    },
+    {
+      "src": "/asset/manifest-icon/152.png",
+      "sizes": "152x152",
+      "type": "image/png"
+    },
+    {
+      "src": "/asset/manifest-icon/192.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "/asset/manifest-icon/384.png",
+      "sizes": "384x384",
+      "type": "image/png"
+    },
+    {
+      "src": "/asset/manifest-icon/512.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}

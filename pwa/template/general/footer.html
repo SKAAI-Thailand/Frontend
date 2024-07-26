@@ -1,0 +1,146 @@
+<footer>
+    <style>
+        html {
+            --footer-bg: white;
+            --footer-font-color: var(--black-color-500);
+            --footer-font-hover-color: var(--black-color-650);
+            --footer-span-color: var(--primary-color-400);
+        }
+
+        html[theme=dark] {
+            --footer-bg: #131313;
+            --footer-font-color: var(--black-color-50);
+            --footer-font-hover-color: var(--black-color-150);
+            --footer-span-color: var(--primary-color-300);
+        }
+
+        footer {
+            width: 100vw;
+            background: var(--footer-bg);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        footer .wrapper {
+            width: 100%;
+            max-width: 1440px;
+            padding: 16px 100px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: space-between;
+            column-gap: 60px;
+        }
+
+        footer .wrapper .left {
+            display: inline-flex;
+            flex-direction: column;
+        }
+
+        footer .wrapper .left h1 {
+            font-size: 28px;
+            font-weight: 500;
+            background: var(--main-color);
+            background-clip: text;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        footer .wrapper .left p {
+            font-size: 12px;
+            color: var(--footer-font-color);
+            font-weight: 400;
+        }
+
+        footer .wrapper .left p span {
+            color: var(--footer-span-color);
+            cursor: pointer;
+        }
+
+        footer .wrapper .right {
+            display: inline-flex;
+            align-items: center;
+            gap: 12px 32px;
+        }
+
+        footer .wrapper .right p {
+            font-size: 16px;
+            color: var(--footer-font-color);
+            cursor: pointer;
+            font-weight: 400;
+            white-space: nowrap;
+        }
+
+        footer .wrapper .right p:hover {
+            color: var(--footer-font-hover-color);
+        }
+
+        @media (max-width: 1440px) {
+            footer .wrapper .right {
+                column-gap: 28px;
+            }
+        }
+
+        @media (max-width: 1200px) {
+            footer .wrapper .right {
+                column-gap: 20px;
+            }
+        }
+
+        @media (max-width: 1024px) {
+            footer .wrapper {
+                padding-inline: 80px;
+            }
+
+            footer .wrapper .right {
+                flex-direction: column;
+                align-items: end;
+            }
+        }
+
+        @media (max-width: 768px) {
+            footer .wrapper {
+                padding-inline: 50px;
+                row-gap: 20px;
+                flex-direction: column;
+                align-items: center;
+            }
+
+            footer .wrapper .left h1 {
+                text-align: center;
+            }
+
+            footer .wrapper .left p {
+                text-align: center;
+            }
+
+            footer .wrapper .right {
+                flex-direction: row;
+                justify-content: center;
+                flex-wrap: wrap;
+            }
+        }
+
+        @media (max-width: 425px) {
+            footer .wrapper {
+                padding-inline: 20px;
+            }
+
+            footer .wrapper .right {
+                flex-direction: column;
+                align-items: center;
+            }
+        }
+    </style>
+    <div class="wrapper">
+        <div class="left">
+            <h1>SKAAI 1.0</h1>
+            <p>© 2024 <span onclick="window.open('https://www.nectec.or.th/', '_blank')">NECTEC</span> &amp; <span onclick="Route.goto('/contact')">SKAAI Developer</span>, All rights reserved.</p>
+        </div>
+        <div class="right">
+            <p onclick="window.open('https://skaai.mocuse.com/term-and-condition.html')">ข้อตกลงและเงื่อนไข</p>
+            <p onclick="window.open('https://skaai.mocuse.com/privacy-policy.html')">นโยบายความเป็นส่วนตัว</p>
+            <p onclick="Route.goto('/contact')">ติดต่อทีมพัฒนา</p>
+        </div>
+    </div>
+</footer>

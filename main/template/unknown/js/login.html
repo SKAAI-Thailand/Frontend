@@ -1,0 +1,44 @@
+<script>
+  Security.OAuth.getRole().then(role => {
+    switch (role) {
+      case RoleList.general:
+        Route.goto("/exercises");
+        break;
+
+      default:
+        break;
+    }
+  }).catch(err => {
+    console.error(err);
+  })
+
+  document.querySelector("main .wrapper form .submit").addEventListener("click", async (e) => {
+    e.preventDefault();
+
+    let email = document.querySelector("input#email_input");
+    let password = document.querySelector("input#password_input");
+
+    if (email && password) {
+      Security.OAuth.setInfo(email.value, password.value);
+
+      let user_role = await Security.OAuth.getRole();
+
+      if (user_role === RoleList.general) {
+        window.location = '/exercises';
+      } else {
+        Security.OAuth.clearInfo();
+        alert("อีเมลหรือรหัสผ่านไม่ถูกต้อง");
+      }
+    }
+  });
+
+  document.querySelector("main .options button#google").addEventListener("click", e => {
+    e.preventDefault();
+
+    fetch(SETTING.Server + "/oauth-url/google").then(res => {
+      return res.json()
+    }).then(data => {
+      window.location = data.url;
+    })
+  })
+</script>

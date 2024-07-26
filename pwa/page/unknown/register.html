@@ -1,0 +1,345 @@
+<main>
+  <style>
+    html {
+      --main-wrap-bg: white;
+      --main-wrap-border-color: #4A55FF;
+      --main-form-label-color: black;
+      --main-form-input-color: black;
+      --main-form-input-border-color: var(--black-color-300);
+      --main-form-option-bg: white;
+      --main-form-option-border-color: #989898;
+      --main-form-option-font-color: black;
+    }
+
+    html[theme=dark] {
+      --main-wrap-bg: black;
+      --main-wrap-border-color: #4A55FF;
+      --main-form-label-color: white;
+      --main-form-input-color: white;
+      --main-form-input-border-color: white;
+      --main-form-option-bg: var(--black-color-800);
+      --main-form-option-border-color: #989898;
+      --main-form-option-font-color: white;
+    }
+
+    main {
+      padding: 40px 100px;
+      width: min(100vw, 1440px);
+      height: max(500px, 100%);
+      display: grid;
+      justify-content: center;
+      align-items: center;
+    }
+
+    main .wrapper {
+      display: inline-flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      border-radius: 24px;
+      border: 1px solid var(--main-wrap-border-color);
+      background: var(--main-wrap-bg);
+      padding: 16px;
+      margin-block: 16px;
+    }
+
+    main .wrapper h1 {
+      font-size: 32px;
+      font-weight: 500;
+      background: var(--main-color);
+      background-clip: text;
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    main .wrapper form {
+      margin-top: 32px;
+      display: inline-flex;
+      flex-direction: column;
+    }
+
+    main .wrapper form div {
+      display: inline-flex;
+      flex-direction: column;
+    }
+
+    main .wrapper form div:not(:first-child) {
+      margin-top: 24px;
+    }
+
+    main .wrapper form div label {
+      font-size: 16px;
+      font-weight: 400;
+      margin-bottom: 8px;
+      color: var(--main-form-label-color);
+    }
+
+    main .wrapper form div input {
+      width: min(400px, 80vw);
+      padding: 8px 16px;
+      border-radius: 8px;
+      border: 0.5px solid var(--main-form-input-border-color);
+      font-size: 16px;
+      font-weight: 400;
+      outline: none;
+      color: var(--main-form-input-color);
+      background: none;
+    }
+
+    main .wrapper form .submit {
+      width: 100%;
+      padding: 8px;
+      border-radius: 16px;
+      background: var(--main-color);
+      box-shadow: 2px 2px 8px 2px rgba(255, 255, 255, 0.15);
+      font-size: 20px;
+      font-weight: 500;
+      color: white;
+      cursor: pointer;
+      margin-top: 32px;
+      border: none;
+    }
+
+    main .wrapper form .submit:hover {
+      filter: brightness(90%);
+    }
+
+    main .wrapper .submenu {
+      display: inline-flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-top: 24px;
+      width: 100%;
+    }
+
+    main .wrapper .submenu p {
+      font-size: 16px;
+      font-weight: 400;
+      cursor: pointer;
+      color: var(--main-form-option-font-color);
+    }
+
+    main .wrapper .submenu p:hover {
+      opacity: .8;
+    }
+
+    main .wrapper .separate {
+      margin-top: 20px;
+      width: 100%;
+      display: inline-flex;
+      flex-direction: column;
+    }
+
+    main .wrapper .separate p {
+      text-align: center;
+      transform: translateY(-50%);
+      width: fit-content;
+      align-self: center;
+      padding-inline: 12px;
+      background: var(--main-wrap-bg);
+      color: var(--main-form-option-font-color);
+    }
+
+    main .wrapper .options {
+      display: inline-flex;
+      flex-direction: column;
+      row-gap: 8px;
+      width: 100%;
+    }
+
+    main .wrapper .options button {
+      width: 100%;
+      display: inline-flex;
+      padding: 12px;
+      align-items: center;
+      justify-content: center;
+      column-gap: 12px;
+      border-radius: 16px;
+      border: 0.5px solid var(--main-form-option-border-color);
+      box-shadow: 2px 2px 8px 2px rgba(255, 255, 255, 0.15);
+      cursor: pointer;
+      background: var(--main-form-option-bg);
+    }
+
+    main .wrapper .options button:hover {
+      opacity: .8;
+    }
+
+    main .wrapper .options button p {
+      font-size: 16px;
+      font-weight: 400;
+      color: var(--main-form-option-font-color);
+    }
+
+    main .wrapper .options button svg {
+      width: 28px;
+      height: 28px;
+    }
+
+    @media (max-width: 1024px) {
+      main {
+        padding-inline: 80px;
+      }
+    }
+
+    @media (max-width: 768px) {
+      main {
+        padding-inline: 50px;
+      }
+
+      main .wrapper .options button {
+        column-gap: 8px;
+      }
+
+      main .wrapper .options button p {
+        font-size: 14px;
+      }
+
+      main .wrapper .options button svg {
+        width: 24px;
+        height: 24px;
+      }
+    }
+
+    @media (max-width: 425px) {
+      main {
+        padding-inline: 20px;
+      }
+    }
+  </style>
+  <div class="wrapper">
+    <h1>ลงทะเบียน</h1>
+    <form onsubmit="return false">
+      <div>
+        <label for="name_input">ชื่อ - นามสกุล</label>
+        <input type="text" id="name_input" placeholder="นายซอฟต์แวร์ ไซเบอร์">
+      </div>
+      <div>
+        <label for="email_input">อีเมล</label>
+        <input type="text" id="email_input" placeholder="example@domain.tld">
+      </div>
+      <div>
+        <label for="password_input">รหัสผ่าน</label>
+        <input type="password" id="password_input" placeholder="••••••••">
+      </div>
+      <div>
+        <label for="con_password_input">ยืนยันรหัสผ่าน</label>
+        <input type="password" id="con_password_input" placeholder="••••••••">
+      </div>
+      <button type="button" class="submit" id="submit_register">ลงทะเบียน</button>
+    </form>
+    <div class="submenu">
+      <p onclick="Route.goto('/reset-password')">ลืมรหัสผ่าน</p>
+      <p onclick="Route.goto('/login')">เข้าสู่ระบบ</p>
+    </div>
+    <div class="separate">
+      <hr>
+      <p>or</p>
+    </div>
+    <div class="options">
+      <button type="button" id="google">
+        <svg xmlns="http://www.w3.org/2000/svg" width="29" height="28" viewBox="0 0 29 28" fill="none">
+          <path
+            d="M26.82 14.2959C26.82 13.3859 26.7383 12.5109 26.5867 11.6709H14.5V16.6409H21.4067C21.1033 18.2392 20.1933 19.5925 18.8283 20.5025V23.7342H22.9933C25.42 21.4942 26.82 18.2042 26.82 14.2959Z"
+            fill="#4285F4" />
+          <path
+            d="M14.5 26.8375C17.965 26.8375 20.87 25.6942 22.9933 23.7342L18.8283 20.5025C17.685 21.2725 16.2267 21.7392 14.5 21.7392C11.1633 21.7392 8.32833 19.4875 7.31333 16.4542H3.04333V19.7675C5.155 23.9559 9.48333 26.8375 14.5 26.8375Z"
+            fill="#34A853" />
+          <path
+            d="M7.31329 16.4425C7.05663 15.6725 6.90496 14.8559 6.90496 14.0042C6.90496 13.1525 7.05663 12.3359 7.31329 11.5659V8.25255H3.04329C2.16829 9.97921 1.66663 11.9275 1.66663 14.0042C1.66663 16.0809 2.16829 18.0292 3.04329 19.7559L6.36829 17.1659L7.31329 16.4425Z"
+            fill="#FBBC05" />
+          <path
+            d="M14.5 6.28088C16.39 6.28088 18.07 6.93422 19.4117 8.19422L23.0867 4.51922C20.8583 2.44255 17.965 1.17088 14.5 1.17088C9.48334 1.17088 5.155 4.05255 3.04333 8.25255L7.31334 11.5659C8.32834 8.53255 11.1633 6.28088 14.5 6.28088Z"
+            fill="#EA4335" />
+        </svg>
+        <p>Sign In With Google</p>
+      </button>
+    </div>
+  </div>
+  <script>
+    Security.OAuth.getRole().then(role => {
+      switch (role) {
+        case RoleList.general:
+          Route.goto("/exercises");
+          break;
+
+        default:
+          break;
+      }
+    }).catch(err => {
+      console.error(err);
+    })
+
+    const name_input = document.querySelector("#name_input");
+    const email_input = document.querySelector("#email_input");
+    const password_input = document.querySelector("#password_input");
+    const con_password_input = document.querySelector("#con_password_input");
+
+    document.querySelector("#submit_register").addEventListener("click", async (e) => {
+      e.preventDefault();
+
+      if (name_input.value === '' || email_input.value === '' || password_input.value === '' || con_password_input.value === '') {
+        alert("กรอกข้อมูลไม่ครบ");
+        return;
+      }
+
+      if (password_input.value != con_password_input.value) {
+        alert("รหัสผ่านที่ยืนยันไม่ตรงกัน");
+        return;
+      }
+
+      fetch(SETTING.Server + "/register", {
+        method: "POST",
+        cache: "no-cache",
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: API.postBody({
+          name: name_input.value,
+          password: password_input.value,
+          email: email_input.value
+        })
+      }).then(res => {
+        return res.json();
+      }).then(info => {
+
+        if (info.detail) {
+          alert("เกิดข้อผิดพลาด ไม่สามารถสร้างบัญชีผู้ใช้งาน: " + info.detail.text)
+          return;
+        }
+
+        if (info.data.success) {
+          alert("สร้างบัญชีผู้ใช้งานสำเร็จ");
+          Route.goto("/login");
+        } else {
+          alert("เกิดข้อผิดพลาด ไม่สามารถสร้างบัญชีผู้ใช้งาน");
+        }
+      });
+    });
+
+    document.querySelector("main .options button#google").addEventListener("click", e => {
+      e.preventDefault();
+
+      fetch(SETTING.Server + "/oauth-url/pwa-google")
+        .then(res => res.json())
+        .then(data => {
+          const newWindow = window.open(data.url, '_blank', 'location=yes,height=570,width=520,scrollbars=yes,status=yes');
+
+          const checkWindowClosed = () => {
+            if (newWindow.closed) {
+              clearInterval(pollingInterval);
+
+              let status = window.localStorage.getItem('google-oauth-status');
+              window.localStorage.removeItem('google-oauth-status');
+
+              if (status === "+") {
+                Route.goto('/exercises');
+              }
+            }
+          };
+
+          const pollingInterval = setInterval(checkWindowClosed, 1000);
+        });
+    })
+  </script>
+</main>

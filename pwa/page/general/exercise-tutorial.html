@@ -1,0 +1,119 @@
+{{exhead}}
+<main>
+    <style>
+        html {
+            --main-primary-font-color: black;
+            --main-secondary-font-color: var(--black-color-500);
+            --main-card-border-color: #989898;
+        }
+
+        html[theme=dark] {
+            --main-primary-font-color: white;
+            --main-secondary-font-color: var(--black-color-200);
+            --main-card-border-color: var(--black-color-300);
+        }
+
+        main {
+            padding-inline: 100px;
+            width: min(100vw, 1024px);
+            height: max(500px, 100%);
+            margin-left: 50%;
+            transform: translateX(-50%);
+        }
+
+        main .head {
+            margin-top: 48px;
+            display: flex;
+            flex-direction: column;
+            row-gap: 8px;
+        }
+
+        main .head .name {
+            font-size: 32px;
+            font-weight: 500;
+            color: var(--main-primary-font-color);
+        }
+
+        main .head .list {
+            display: inline-flex;
+            column-gap: 8px;
+        }
+
+        main .head .list p {
+            padding: 8px 24px;
+            background: transparent;
+            border-radius: 8px;
+            border: 0.5px solid var(--main-card-border-color);
+            font-size: 10px;
+            font-weight: 400;
+            color: var(--main-secondary-font-color);
+        }
+
+        main video {
+            aspect-ratio: 2/1;
+            width: min(1028px, 100%);
+            margin-top: 32px;
+            border-radius: 16px;
+            border: 0.5px solid var(--main-card-border-color);
+        }
+
+        main .desc {
+            margin-block: 24px;
+            color: var(--main-primary-font-color);
+        }
+
+        @media (max-width: 1024px) {
+            main {
+                padding-inline: 80px;
+            }
+        }
+
+        @media (max-width: 768px) {
+            main {
+                padding-inline: 50px;
+            }
+        }
+
+        @media (max-width: 425px) {
+            main {
+                padding-inline: 20px;
+            }
+        }
+    </style>
+    <div class="head">
+        <h2 class="name" id="pose_name">ท่าตบเข่า</h2>
+        <div class="list">
+            <p>พื้นฐาน</p>
+        </div>
+    </div>
+    <video controls="controls" id="pose_video">
+    </video>
+    <div class="desc">
+        <p id="pose_desc">คำอธิบายประกอบท่า</p>
+    </div>
+    <script>
+        let url = new URL(window.location.href);
+        let searchParams = new URLSearchParams(url.search);
+        const pose_id = searchParams.get('pose');
+
+        if (pose_id == null) {
+            Route.goto("/exercises");
+        }
+
+        fetch(SETTING.Server + "/pose/" + pose_id + "/info").then(res => {
+            return res.json();
+        }).then(info => {
+            pose_info = info.data;
+
+            document.querySelector("#pose_name").innerHTML = pose_info.name;
+            document.querySelector("#pose_desc").innerHTML = pose_info.description;
+
+            const video_element = document.createElement("source");
+            video_element.type = "video/mp4"
+            video_element.src = "https://skaai.mocuse.com/asset/database/tutorial_video/" + pose_id + ".mp4";
+
+            document.querySelector("#pose_video").appendChild(video_element)
+        })
+    </script>
+</main>
+{{structure_script}}
